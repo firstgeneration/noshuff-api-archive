@@ -10,6 +10,7 @@ Django = "3.2"
 psycopg2-binary = "^2.9.2"
 
 [tool.poetry.dev-dependencies]
+django-dotenv = "^1.4.2"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

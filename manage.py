@@ -3,9 +3,17 @@
 import os
 import sys
 
+try:
+    import dotenv
+except ImportError:
+    dotenv = False
+
 
 def main():
     """Run administrative tasks."""
+    if dotenv:
+        dotenv.read_dotenv()
+
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'noshuff.settings')
     try:
         from django.core.management import execute_from_command_line
