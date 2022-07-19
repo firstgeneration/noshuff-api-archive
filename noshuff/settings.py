@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'core.apps.CoreConfig'
+    'core.apps.CoreConfig',
+    'django_extensions',
 ]
 
 MIDDLEWARE = [
@@ -134,3 +135,13 @@ STATIC_URL = '/static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'core.User'
+
+SPOTIFY_REDIRECT_URI = 'http://127.0.0.1:8000/api/v1/post_auth'
+
+NOSHUFF_FE_REDIRECT_URI = os.getenv('NOSHUFF_FE_REDIRECT_URI')
+
+SPOTIFY_CLIENT_ID = os.getenv('SPOTIFY_CLIENT_ID')
+SPOTIFY_SECRET_KEY = os.getenv('SPOTIFY_SECRET_KEY')
+
+SECRET_KEY = os.getenv('SECRET_KEY')
+JWT_SECRET = os.getenv('JWT_SECRET')
