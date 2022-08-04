@@ -34,8 +34,8 @@ class TestLogin(TestCase):
         }
         redirect_mock.return_value = HttpResponse("")
 
-        code = 'NApCCg..BkWtQ&state=34fFs29kd09'
-        url = reverse('post_auth') + f'?code={code}'
+        params = 'code=NApCCg..BkWtQ&state=34fFs29kd09'
+        url = reverse('post_auth') + f'?{params}'
         self.client.get(url)
 
         self.assertEqual(1, User.objects.count())
