@@ -14,9 +14,9 @@ class TestLogin(TestCase):
     def test_pre_auth(self):
         pass
 
-    @patch('core.views.redirect')
-    @patch('core.views._fetch_spotify_user_data')
-    @patch('core.views._exchange_code_for_token_data')
+    @patch('core.authentication.views.redirect')
+    @patch('core.authentication.views._fetch_spotify_user_data')
+    @patch('core.authentication.views._exchange_code_for_token_data')
     def test_post_auth(self, token_mock, user_mock, redirect_mock):
         self.assertFalse(User.objects.exists())
 
