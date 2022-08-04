@@ -3,7 +3,7 @@ from django.urls import reverse
 from django.conf import settings
 from unittest.mock import patch
 from core.models import User
-from urllib.parse import urlsplit, parse_qs, urlparse
+from urllib.parse import parse_qs, urlparse
 from django.http import HttpResponse
 
 class TestLogin(TestCase):
@@ -34,7 +34,7 @@ class TestLogin(TestCase):
         }
         redirect_mock.return_value = HttpResponse("")
 
-        code = 'code=NApCCg..BkWtQ&state=34fFs29kd09'
+        code = 'NApCCg..BkWtQ&state=34fFs29kd09'
         url = reverse('post_auth') + f'?code={code}'
         self.client.get(url)
 
@@ -76,3 +76,15 @@ class TestLogin(TestCase):
             user = User.objects.first()
             self.assertEqual('new_test_display_name', user.display_name)
             self.assertNotEqual(original, user.display_name)
+
+        with self.subTest('User denies access'):
+            User.objects.all().delete()
+            self.assertFalse(User.objects.exists())
+
+            url = reverse('post_auth') + f'?error=access_denied'
+            self.client.get(url)
+
+            redirect_url = redirect_mock.call_args.args[0]
+            parsed = urlparse(redirect_url)
+            self.assertEqual('error=access_denied', parsed.query)
+            self.assertEqual(0, User.objects.count())
