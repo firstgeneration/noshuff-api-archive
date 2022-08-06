@@ -1,41 +1,12 @@
 from django.shortcuts import redirect
 from django.conf import settings
-from random import Random
-import requests
 from core.models import User
 import urllib
-import json
+from core.spotify_utils import exchange_code_for_token_data, fetch_spotify_user_data, generate_spotify_auth_url
 
 
 def pre_auth(request):
-    state = int(Random().random() * 10000000000000000)
-    scope = 'user-read-private user-read-email'
-    url = 'https://accounts.spotify.com/authorize?'
-    data = {'client_id': settings.SPOTIFY_CLIENT_ID,
-            'redirect_uri': settings.SPOTIFY_REDIRECT_URI,
-            'response_type': 'code',
-            'scope': scope,
-            'state': state}
-
-    query_params = urllib.parse.urlencode(data, doseq=False)
-
-    return redirect(url + query_params)
-
-def _fetch_spotify_user_data(spotify_access_token):
-    url = 'https://api.spotify.com/v1/me'
-    headers = { 'Authorization': f'Bearer {spotify_access_token}' }
-    response = requests.request('GET', url=url, headers=headers)
-
-    return json.loads(response.content)
-
-def _exchange_code_for_token_data(code):
-    data = {'grant_type': 'authorization_code',
-            'code': code,
-            'redirect_uri': settings.SPOTIFY_REDIRECT_URI}
-    query_params = urllib.parse.urlencode(data, doseq=False)
-
-    response = requests.request('GET', url=spotify_token_url + query_params)
-    return response.GET
+    return redirect(generate_spotify_auth_url())
 
 def post_auth(request):
     code_data = request.GET
@@ -44,13 +15,15 @@ def post_auth(request):
     if error:
         return redirect(f'{settings.NOSHUFF_FE_REDIRECT_URI}?error={error}')
 
-    token_data = _exchange_code_for_token_data(code_data['code'])
+    # TODO: Check that the state param matches
+
+    token_data = exchange_code_for_token_data(code_data['code'])
     spotify_access_token = token_data['access_token']
     scope = token_data['scope']
     spotify_access_token_expires_in = token_data['expires_in']
     spotify_refresh_token = token_data['refresh_token']
 
-    spotify_user_data = _fetch_spotify_user_data(spotify_access_token)
+    spotify_user_data = fetch_spotify_user_data(spotify_access_token)
     spotify_id = spotify_user_data.get('id')
     email = spotify_user_data.get('email')
     display_name = spotify_user_data.get('display_name')
