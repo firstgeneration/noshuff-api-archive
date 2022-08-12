@@ -43,3 +43,4 @@ def fetch_spotify_user_data(spotify_access_token):
     requests.request()
 
     return json.loads(response.content)
+
