@@ -5,6 +5,7 @@ import jwt
 import datetime
 import requests
 from base64 import b64encode
+from django_extensions.db.models import TimeStampedModel
 
 
 class User(AbstractUser):
@@ -65,3 +66,11 @@ class User(AbstractUser):
         self.scope = token_json['scope']
         self.save()
 
+
+class Post(TimeStampedModel):
+    spotify_playlist_id = models.CharField(max_length=64)
+    caption = models.CharField(max_length=144)
+
+    user = models.ForeignKey('User', on_delete=models.CASCADE)
+    #likers
+    # comments
