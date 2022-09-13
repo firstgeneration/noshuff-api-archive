@@ -1,3 +1,4 @@
+from re import T
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
@@ -68,9 +69,39 @@ class User(AbstractUser):
 
 
 class Post(TimeStampedModel):
+    # uuid = 
     spotify_playlist_id = models.CharField(max_length=64)
+    # name = models.CharField(max_length=64)
     caption = models.CharField(max_length=144)
+    # playlist cover image(s) - consider an array field here for the urls
+    # track_count = models.IntegerField() - This may become stale, could use a lazy-update 
+    # duration (v2) - See if there is a field for storing a duration - similar issue with track_count
 
-    user = models.ForeignKey('User', on_delete=models.CASCADE)
-    #likers
-    # comments
+    # Relations
+    author = models.ForeignKey('User', on_delete=models.CASCADE)
+    # tags = models.ManyToManyField('HashTag', on_delete=models.CASCADE)
+
+
+class HashTag(TimeStampedModel):
+    # uuid = 
+    # tag = models.CharField(null=False, unique=True)
+    pass
+
+
+class Like(TimeStampedModel):
+    pass
+    # uuid = 
+    # liker = models.ForeignKey('User', on_delete=models.CASCADE) 
+    # post = models.ForeignKey('Post', on_delete=models.CASCADE)
+
+
+class Comment(TimeStampedModel):
+    # uuid = 
+    text = models.TextField()
+    
+    # Realtions
+    # author = models.ForeignKey('User', on_delete=models.CASCADE)
+    # post = models.ForeignKey('Post', on_delete=models.CASCADE)
+    
+    # For nested comments - use POSTGRES BTREE
+    # parent = models.ForeignKey('Comment', on_delete=models.CASCADE)

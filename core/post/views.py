@@ -15,11 +15,16 @@ def get_current_user_unposted_playlists(self, request, format=None):
 
     playlists = sp.current_user_playlists()
 
-    current_user = None # TODO
+    current_user = None # TODO: Determine current user from auth backends
     current_user.posts_set.values('spotify_playlist_id') # or whatever it's called
     unposted_playlists = {}
     # Parse these playlists
         # remove ones already posted to noshuff
+        # ATTRS:
+            # cover image
+            # playlist name
+            # track count
+            # duration (consider adding in future release)
 
     # for playlist in playlists['items']:
     #     print(playlist['name'])
